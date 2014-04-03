@@ -3,7 +3,6 @@
 # written by the AQA Programmer Team
 # developed in the Python 3.2 programming environment
 # version 2 edited 06/03/2014
-
 import random
 
 NO_OF_RECENT_SCORES = 3
@@ -78,6 +77,8 @@ def DisplayMenu():
 def GetMenuChoice():
   Choice = input()
   print()
+  if Choice in ['Q','q','Quit','QUIT','quit']:
+    Choice = 'q'
   return Choice
 
 def LoadDeck(Deck):
