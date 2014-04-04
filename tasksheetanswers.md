@@ -4,7 +4,7 @@
 1. GetPlayerName()
 2. Create a while loop so if the name is invalid the user will be prompted to enter their name again. If the name is valid, it will be returned out the function
 3. A variable that continues/ends the while loop, most likely 'valid'. It's data type is boolean. 
-Pseudo code for improvements:    return
+Pseudo code for improvements:
 
 FUNCTION GetPlayerName()
 	valid: Boolean
