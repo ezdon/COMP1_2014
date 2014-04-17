@@ -23,3 +23,11 @@ END FUNCTION
 
 ##Task 3b questions
 1. UpdateRecentScores()
+##Task 5 questions
+1. import datetime
+2. UpdateRecentScores()
+	DisplayRecentScores()
+	ResetRecentScores()
+	TRecentScore()
+3. By using the strptime() function	
+	
