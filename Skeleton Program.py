@@ -188,24 +188,30 @@ def UpdateRecentScores(RecentScores, Score):
   valid = False
   while not valid:
     PlayerChoice = input('Would you like to add your score to the high score table (y or n):')
-    if choice == 'n':
+    if PlayerChoice in ['n','N','No','no']:
+      valid = True
+    elif PlayerChoice in ['y','Y','yes','Yes']:
+      PlayerName = GetPlayerName()
+      FoundSpace = False
+      Count = 1
+      while (not FoundSpace) and (Count <= NO_OF_RECENT_SCORES):
+        if RecentScores[Count].Name == '':
+          FoundSpace = True
+        else:
+          Count = Count + 1
+      if not FoundSpace:
+        for Count in range(1, NO_OF_RECENT_SCORES):
+          RecentScores[Count].Name = RecentScores[Count + 1].Name
+          RecentScores[Count].Score = RecentScores[Count + 1].Score
+        Count = NO_OF_RECENT_SCORES
+      RecentScores[Count].Name = PlayerName
+      RecentScores[Count].Score = Score
+      valid = True
+    else:
+      valid = False
+      print('Not valid')
       
-    PlayerName = GetPlayerName()
-    FoundSpace = False
-    Count = 1
-    while (not FoundSpace) and (Count <= NO_OF_RECENT_SCORES):
-      if RecentScores[Count].Name == '':
-        FoundSpace = True
-      else:
-        Count = Count + 1
-    if not FoundSpace:
-      for Count in range(1, NO_OF_RECENT_SCORES):
-        RecentScores[Count].Name = RecentScores[Count + 1].Name
-        RecentScores[Count].Score = RecentScores[Count + 1].Score
-      Count = NO_OF_RECENT_SCORES
-    RecentScores[Count].Name = PlayerName
-    RecentScores[Count].Score = Score
-
+   
 def PlayGame(Deck, RecentScores):
   LastCard = TCard()
   NextCard = TCard()
