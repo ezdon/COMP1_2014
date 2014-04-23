@@ -25,7 +25,6 @@ Choice = ''
 
 def GetRank(RankNo, AceRank):
   if AceRank == None:
-  
     Rank = ''
     if RankNo == 1:
       Rank = 'Ace'

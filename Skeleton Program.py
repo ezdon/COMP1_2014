@@ -21,37 +21,66 @@ class TRecentScore():
 Deck = [None]
 RecentScores = [None]
 Choice = ''
-
 def GetRank(RankNo):
-  Rank = ''
-  if RankNo == 1:
-    Rank = 'Ace'
-  elif RankNo == 2:
-    Rank = 'Two'
-  elif RankNo == 3:
-    Rank = 'Three'
-  elif RankNo == 4:
-    Rank = 'Four'
-  elif RankNo == 5:
-    Rank = 'Five'
-  elif RankNo == 6:
-    Rank = 'Six'
-  elif RankNo == 7:
-    Rank = 'Seven'
-  elif RankNo == 8:
-    Rank = 'Eight'
-  elif RankNo == 9:
-    Rank = 'Nine'
-  elif RankNo == 10:
-    Rank = 'Ten'
-  elif RankNo == 11:
-    Rank = 'Jack'
-  elif RankNo == 12:
-    Rank = 'Queen'
-  elif RankNo == 13:
-    Rank = 'King'
-  return Rank
-
+  if AceRank == 'l':
+    Rank = ''
+    if RankNo == 1:
+      Rank = 'Ace'
+    elif RankNo == 2:
+      Rank = 'Two'
+    elif RankNo == 3:
+      Rank = 'Three'
+    elif RankNo == 4:
+      Rank = 'Four'
+    elif RankNo == 5:
+      Rank = 'Five'
+    elif RankNo == 6:
+      Rank = 'Six'
+    elif RankNo == 7:
+      Rank = 'Seven'
+    elif RankNo == 8:
+      Rank = 'Eight'
+    elif RankNo == 9:
+      Rank = 'Nine'
+    elif RankNo == 10:
+      Rank = 'Ten'
+    elif RankNo == 11:
+      Rank = 'Jack'
+    elif RankNo == 12:
+      Rank = 'Queen'
+    elif RankNo == 13:
+      Rank = 'King'
+    return Rank
+  elif AceRank =='h':
+    Rank = ''
+    if RankNo == 1:
+      Rank = 'Two'
+    elif RankNo == 2:
+      Rank = 'Three'
+    elif RankNo == 3:
+      Rank = 'Four'
+    elif RankNo == 4:
+      Rank = 'Five'
+    elif RankNo == 5:
+      Rank = 'Six'
+    elif RankNo == 6:
+      Rank = 'Seven'
+    elif RankNo == 7:
+      Rank = 'Eight'
+    elif RankNo == 8:
+      Rank = 'Nine'
+    elif RankNo == 9:
+      Rank = 'Ten'
+    elif RankNo == 10:
+      Rank = 'Jack'
+    elif RankNo == 11:
+      Rank = 'Queen'
+    elif RankNo == 12:
+      Rank = 'King'
+    elif RankNo == 13:
+      Rank = 'Ace'
+    return Rank
+    
 def GetSuit(SuitNo):
   Suit = ''
   if SuitNo == 1:
@@ -72,9 +101,50 @@ def DisplayMenu():
   print('2. Play game (without shuffle)')
   print('3. Display recent scores')
   print('4. Reset recent scores')
+  print('5. Options')
   print()
   print('Select an option from the menu (or enter q to quit): ', end='')
 
+def DisplayOptions():
+  print('Options Menu')
+  print()
+  print('1. Set Ace to HIGH or LOW')
+  print()
+  GetOptionChoice()
+
+def GetOptionChoice():
+  OptionChoice = input('Select an option from the menu (q for quit)')
+  SetOptions(OptionChoice)
+
+
+def SetOptions(OptionChoice):
+  valid = False
+  while not valid:
+    if OptionChoice == '1':
+      SetAceHighOrLow()
+      valid = True
+    elif OptionChoice == 'q':
+      valid = True
+    else:
+      valid = False
+      print('Not a valid option')
+      GetOptionChoice()
+      
+
+
+def SetAceHighOrLow():
+  Valid = False
+  while not Valid:
+    selection = input('Would you like the ace to be high or low? (h/l):')
+    if selection == 'h':
+      AceRank = 'h'
+      Valid = True
+    elif selection == 'l':
+      AceRank = 'l'
+      Valid = True
+      
+  
+      
 def GetMenuChoice():
   Choice = input()
   print()
@@ -117,7 +187,7 @@ def GetCard(ThisCard, Deck, NoOfCardsTurnedOver):
   ThisCard.Rank = Deck[1].Rank
   ThisCard.Suit = Deck[1].Suit
   for Count in range(1, 52 - NoOfCardsTurnedOver):
-    Deck[Count].Rank = Deck[Count + 1].Rank
+    Deck[Count].Rank = Deck[Count + 1].Rank 
     Deck[Count].Suit = Deck[Count + 1].Suit
   Deck[52 - NoOfCardsTurnedOver].Suit = 0
   Deck[52 - NoOfCardsTurnedOver].Rank = 0
@@ -179,10 +249,10 @@ def DisplayRecentScores(RecentScores):
   print()
   print('Recent Scores: ')
   print()
-  print('{0:10} {1}'.format('Name','Score'))
+  print('{0:<10} {1:<10} {2:<10}'.format('Name','Score','Date'))
   print()
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
-    print('{0:10} {1}           Date Archived: {2}'.format(RecentScores[Count].Name,RecentScores[Count].Score, RecentScores[Count].Date))
+    print('{0:<10} {1:<10} {2:<10}'.format(RecentScores[Count].Name,RecentScores[Count].Score, RecentScores[Count].Date))
   print()
   print('Press the Enter key to return to the main menu')
   input()
@@ -268,3 +338,5 @@ if __name__ == '__main__':
       DisplayRecentScores(RecentScores)
     elif Choice == '4':
       ResetRecentScores(RecentScores)
+    elif Choice == '5':
+      DisplayOptions()
