@@ -23,35 +23,37 @@ Deck = [None]
 RecentScores = [None]
 Choice = ''
 
-def GetRank(RankNo):
-  Rank = ''
-  if RankNo == 1:
-    Rank = 'Ace'
-  elif RankNo == 2:
-    Rank = 'Two'
-  elif RankNo == 3:
-    Rank = 'Three'
-  elif RankNo == 4:
-    Rank = 'Four'
-  elif RankNo == 5:
-    Rank = 'Five'
-  elif RankNo == 6:
-    Rank = 'Six'
-  elif RankNo == 7:
-    Rank = 'Seven'
-  elif RankNo == 8:
-    Rank = 'Eight'
-  elif RankNo == 9:
-    Rank = 'Nine'
-  elif RankNo == 10:
-    Rank = 'Ten'
-  elif RankNo == 11:
-    Rank = 'Jack'
-  elif RankNo == 12:
-    Rank = 'Queen'
-  else:
-    Rank = 'King'
-  return Rank
+def GetRank(RankNo, AceRank):
+  if AceRank == None:
+  
+    Rank = ''
+    if RankNo == 1:
+      Rank = 'Ace'
+    elif RankNo == 2:
+      Rank = 'Two'
+    elif RankNo == 3:
+      Rank = 'Three'
+    elif RankNo == 4:
+      Rank = 'Four'
+    elif RankNo == 5:
+      Rank = 'Five'
+    elif RankNo == 6:
+      Rank = 'Six'
+    elif RankNo == 7:
+      Rank = 'Seven'
+    elif RankNo == 8:
+      Rank = 'Eight'
+    elif RankNo == 9:
+      Rank = 'Nine'
+    elif RankNo == 10:
+      Rank = 'Ten'
+    elif RankNo == 11:
+      Rank = 'Jack'
+    elif RankNo == 12:
+      Rank = 'Queen'
+    else:
+      Rank = 'King'
+    return Rank
 
 def GetSuit(SuitNo):
   Suit = ''
@@ -73,8 +75,40 @@ def DisplayMenu():
   print('2. Play game (without shuffle)')
   print('3. Display recent scores')
   print('4. Reset recent scores')
+  print('5. Options')
   print()
   print('Select an option from the menu (or enter q to quit): ', end='')
+
+def DisplayOptions():
+  print('OPTION MENU')
+  print()
+  print('1. Set Ace to be HIGH or LOW')
+  print()
+  GetOptionChoice()
+  
+
+def GetOptionChoice():
+  OptionChoice = input('Select an option from the menu (or q to quit)')
+  SetOptions(OptionChoice)
+      
+  
+def SetOptions(OptionChoice):
+  valid = False
+  while not valid:
+    if OptionChoice == '1':
+      SetAceHighOrLow()
+      valid = True
+    elif OptionChoice == 'q':
+      valid = True
+    else:
+      valid = False
+      print('Not a valid option')
+      GetOptionChoice()
+      
+
+def SetAceHighOrLow():
+  AceRank = input('Do you want the Ace to be (h)igh or (l)ow:')
+  return AceRank
 
 def GetMenuChoice():
   Choice = input()
@@ -254,5 +288,7 @@ if __name__ == '__main__':
       PlayGame(Deck, RecentScores)
     elif Choice == '3':
       DisplayRecentScores(RecentScores)
-    else:
+    elif Choice == '4':
       ResetRecentScores(RecentScores)
+    else:
+      DisplayOptions()  
