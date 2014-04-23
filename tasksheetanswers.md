@@ -30,4 +30,8 @@ END FUNCTION
 	ResetRecentScores()
 	TRecentScore()
 3. By using the strptime() function	
-	
+
+Task Sheet 2 Questions
+1. PlayGame
+2. DisplayMenu()
+3. GetRank()	
