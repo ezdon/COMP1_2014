@@ -11,6 +11,7 @@ class TCard():
   def __init__(self):
     self.Suit = 0
     self.Rank = 0
+    self.AceRank = ''
 
 class TRecentScore():
   def __init__(self):
@@ -21,8 +22,10 @@ class TRecentScore():
 Deck = [None]
 RecentScores = [None]
 Choice = ''
+
 def GetRank(RankNo):
-  if AceRank == 'l':
+  info = TCard()
+  if info.AceRank == 'l':
     Rank = ''
     if RankNo == 1:
       Rank = 'Ace'
@@ -51,7 +54,7 @@ def GetRank(RankNo):
     elif RankNo == 13:
       Rank = 'King'
     return Rank
-  elif AceRank =='h':
+  elif info.AceRank == 'h':
     Rank = ''
     if RankNo == 1:
       Rank = 'Two'
@@ -80,7 +83,8 @@ def GetRank(RankNo):
     elif RankNo == 13:
       Rank = 'Ace'
     return Rank
-    
+  
+  
 def GetSuit(SuitNo):
   Suit = ''
   if SuitNo == 1:
@@ -133,18 +137,19 @@ def SetOptions(OptionChoice):
 
 
 def SetAceHighOrLow():
+  info = TCard()
   Valid = False
   while not Valid:
     selection = input('Would you like the ace to be high or low? (h/l):')
     if selection == 'h':
-      AceRank = 'h'
+      info.AceRank = 'h'
       Valid = True
     elif selection == 'l':
-      AceRank = 'l'
+      info.AceRank = 'l'
       Valid = True
-      
   
       
+   
 def GetMenuChoice():
   Choice = input()
   print()
@@ -246,6 +251,7 @@ def ResetRecentScores(RecentScores):
     RecentScores[Count].Date = ''
     
 def DisplayRecentScores(RecentScores):
+  RecentScores = BubbleSortScores(RecentScores)
   print()
   print('Recent Scores: ')
   print()
@@ -288,7 +294,18 @@ def UpdateRecentScores(RecentScores, Score):
     else:
       valid = False
       print('Not valid')
-      
+
+def BubbleSortScores(RecentScores):
+    swap = True
+    while swap:
+      swap = False
+      for count in range(len(RecentScores)-1):
+          if RecentScores[count].Score > RecentScores[count+1].Score:
+              swap = True
+              temp = RecentScores[count].Score
+              RecentScores[count].Score = RecentScores[count+1].Score
+              RecentScores[count+1].Score = temp
+    return RecentScores   
    
 def PlayGame(Deck, RecentScores):
   LastCard = TCard()
