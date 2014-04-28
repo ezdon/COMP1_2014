@@ -11,7 +11,7 @@ class TCard():
   def __init__(self):
     self.Suit = 0
     self.Rank = 0
-    self.AceRank = ''
+
 
 class TRecentScore():
   def __init__(self):
@@ -23,9 +23,9 @@ Deck = [None]
 RecentScores = [None]
 Choice = ''
 
-def GetRank(RankNo):
-  info = TCard()
-  if info.AceRank == 'l':
+
+def GetRank(RankNo, AceRank):
+  if AceRank == 'l':
     Rank = ''
     if RankNo == 1:
       Rank = 'Ace'
@@ -53,8 +53,7 @@ def GetRank(RankNo):
       Rank = 'Queen'
     elif RankNo == 13:
       Rank = 'King'
-    return Rank
-  elif info.AceRank == 'h':
+  elif AceRank == 'h':
     Rank = ''
     if RankNo == 1:
       Rank = 'Two'
@@ -82,7 +81,7 @@ def GetRank(RankNo):
       Rank = 'King'
     elif RankNo == 13:
       Rank = 'Ace'
-    return Rank
+  return Rank
   
   
 def GetSuit(SuitNo):
@@ -114,40 +113,41 @@ def DisplayOptions():
   print()
   print('1. Set Ace to HIGH or LOW')
   print()
-  GetOptionChoice()
+  
 
 def GetOptionChoice():
   OptionChoice = input('Select an option from the menu (q for quit)')
-  SetOptions(OptionChoice)
+  return OptionChoice
 
 
 def SetOptions(OptionChoice):
   valid = False
   while not valid:
     if OptionChoice == '1':
-      SetAceHighOrLow()
+      return OptionChoice
       valid = True
     elif OptionChoice == 'q':
       valid = True
     else:
       valid = False
-      print('Not a valid option')
+      print('Not Valid')
       GetOptionChoice()
+      
       
 
 
 def SetAceHighOrLow():
-  info = TCard()
   Valid = False
   while not Valid:
     selection = input('Would you like the ace to be high or low? (h/l):')
     if selection == 'h':
-      info.AceRank = 'h'
+      AceRank = 'h'
       Valid = True
     elif selection == 'l':
-      info.AceRank = 'l'
+      AceRank = 'l'
       Valid = True
-  
+  print('---- Ace Set! ----')    
+  return AceRank
       
    
 def GetMenuChoice():
@@ -185,7 +185,7 @@ def ShuffleDeck(Deck):
 
 def DisplayCard(ThisCard):
   print()
-  print('Card is the', GetRank(ThisCard.Rank), 'of', GetSuit(ThisCard.Suit))
+  print('Card is the', GetRank(ThisCard.Rank, AceRank), 'of', GetSuit(ThisCard.Suit))
   print()
 
 def GetCard(ThisCard, Deck, NoOfCardsTurnedOver):
@@ -251,7 +251,7 @@ def ResetRecentScores(RecentScores):
     RecentScores[Count].Date = ''
     
 def DisplayRecentScores(RecentScores):
-  RecentScores = BubbleSortScores(RecentScores)
+
   print()
   print('Recent Scores: ')
   print()
@@ -341,6 +341,7 @@ if __name__ == '__main__':
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
     RecentScores.append(TRecentScore())
   Choice = ''
+  AceRank = 'l'
   while Choice != 'q':
     DisplayMenu()
     Choice = GetMenuChoice()
@@ -357,3 +358,9 @@ if __name__ == '__main__':
       ResetRecentScores(RecentScores)
     elif Choice == '5':
       DisplayOptions()
+      OptionChoice = GetOptionChoice()
+      OptionChoice = SetOptions(OptionChoice)
+      if OptionChoice == '1':
+        AceRank = SetAceHighOrLow()
+
+        
