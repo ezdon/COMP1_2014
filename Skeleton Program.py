@@ -5,7 +5,7 @@
 # version 2 edited 06/03/2014
 import random
 import datetime
-NO_OF_RECENT_SCORES = 3
+NO_OF_RECENT_SCORES = 10
 import pickle
 class TCard():
   def __init__(self):
@@ -106,7 +106,6 @@ def DisplayMenu():
   print('4. Reset recent scores')
   print('5. Options')
   print('6. Save High Scores')
-  print('7. Load High Scores')
   print()
   print('Select an option from the menu (or enter q to quit): ', end='')
 
@@ -114,6 +113,7 @@ def DisplayOptions():
   print('Options Menu')
   print()
   print('1. Set Ace to HIGH or LOW')
+  print('2. Card of same score ends game')
   print()
   
 
@@ -126,6 +126,9 @@ def SetOptions(OptionChoice):
   valid = False
   while not valid:
     if OptionChoice == '1':
+      return OptionChoice
+      valid = True
+    elif OptionChoice == '2':
       return OptionChoice
       valid = True
     elif OptionChoice == 'q':
@@ -141,6 +144,7 @@ def SetOptions(OptionChoice):
 def SetAceHighOrLow():
   Valid = False
   while not Valid:
+    print()
     selection = input('Would you like the ace to be high or low? (h/l):')
     if selection == 'h':
       AceRank = 'h'
@@ -148,10 +152,25 @@ def SetAceHighOrLow():
     elif selection == 'l':
       AceRank = 'l'
       Valid = True
+  print()    
   print('---- Ace Set! ----')    
   return AceRank
       
-   
+def SetSameScore():
+  Valid = False
+  while not Valid:
+    print()
+    print("If you set the game to continue each time cards are equal same you will not recieve a point every time they're not equal")
+    selection = input('Do you want cards with the same value as the previous card to end the game? (y/n):')
+    if selection == 'y':
+      SameCardEndsGame = 'y'
+      Valid = True
+    elif selection == 'n':
+      SameCardEndsGame = 'n'
+      Valid = True
+    else: Valid = False
+  return SameCardEndsGame
+
 def GetMenuChoice():
   Choice = input()
   print()
@@ -201,9 +220,13 @@ def GetCard(ThisCard, Deck, NoOfCardsTurnedOver):
 
 def IsNextCardHigher(LastCard, NextCard):
   Higher = False
+  Same = False
   if NextCard.Rank > LastCard.Rank:
     Higher = True
-  return Higher
+  elif NextCard.Rank == LastCard.Rank:
+    Same = True
+      
+  return Higher, Same
 
 def GetPlayerName():
   valid = False
@@ -292,30 +315,32 @@ def UpdateRecentScores(RecentScores, Score):
       RecentScores[Count].Name = PlayerName
       RecentScores[Count].Score = Score
       RecentScores[Count].Date = Date
-      BubbleSortScores(RecentScores)
       valid = True
     else:
       valid = False
       print('Not valid')
 
 def BubbleSortScores(RecentScores):
+    l=len(RecentScores)
     swap = True
     while swap:
       swap = False
-      for count in range(len(RecentScores)-1):
-          if RecentScores[count].Score > RecentScores[count+1].Score:
-              swap = True
-              RecentScores[count].Name = RecentScores[Count + 1].Name
-              RecentScores[count].Score = RecentScores[Count + 1].Score
-              RecentScores[count].Date = RecentScores[Count + 1].Date
-              temp = RecentScores[count+1].Name
-              temp = RecentScores[count+1].Score
-              temp = RecentScores[count+1].Date
+      for count in range(1,l-1):
+          if RecentScores[count].Score < RecentScores[count+1].Score:
+              tempScore = RecentScores[count].Score
+              tempDate = RecentScores[count].Date
+              tempName = RecentScores[count].Name
 
+              RecentScores[count].Score = RecentScores[count+1].Score
+              RecentScores[count].Date = RecentScores[count+1].Date
+              RecentScores[count].Name = RecentScores[count+1].Name
+              RecentScores[count+1].Score = tempScore
+              RecentScores[count+1].Date = tempDate
+              RecentScores[count+1].Name = tempName                
+              swapped = True
     return RecentScores
 
 def SaveScores(RecentScores):
-  RecentScores = TRecentScore()
   with open("save_scores.dat", mode="wb") as my_file:
       pickle.dump(RecentScores, my_file)
     
@@ -327,7 +352,7 @@ def LoadScores():
       
     
 
-def PlayGame(Deck, RecentScores):
+def PlayGame(Deck, RecentScores, SameScoreEndsGame):
   LastCard = TCard()
   NextCard = TCard()
   GameOver = False
@@ -340,12 +365,24 @@ def PlayGame(Deck, RecentScores):
     while (Choice != 'y') and (Choice != 'n'):
       Choice = GetChoiceFromUser()
     DisplayCard(NextCard)
-    NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
-    Higher = IsNextCardHigher(LastCard, NextCard)
-    if (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
+    Higher, Same = IsNextCardHigher(LastCard, NextCard)
+    if SameScoreEndsGame == 'y' and (Higher and Choice == 'y') or SameScoreEndsGame == 'y' and (not Higher and Choice == 'n'):
       DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
+      NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
       LastCard.Rank = NextCard.Rank
       LastCard.Suit = NextCard.Suit
+    elif SameScoreEndsGame == 'n':
+      if Same == True:
+        DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
+        LastCard.Rank = NextCard.Rank
+        LastCard.Suit = NextCard.Suit
+      elif Same == False and (Higher and Choice == 'y') or Same == False and  (not Higher and Choice == 'n'):
+        DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
+        NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
+        LastCard.Rank = NextCard.Rank
+        LastCard.Suit = NextCard.Suit
+      else:
+        GameOver = True
     else:
       GameOver = True
   if GameOver:
@@ -356,23 +393,29 @@ def PlayGame(Deck, RecentScores):
     UpdateRecentScores(RecentScores, 51)
 
 if __name__ == '__main__':
+  try:
+    RecentScores = LoadScores()
+  except FileNotFoundError:
+    print('The file was not found. You need to save some high scores first in order for them to be loaded')
   for Count in range(1, 53):
     Deck.append(TCard())
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
     RecentScores.append(TRecentScore())
   Choice = ''
   AceRank = 'l'
+  SameCardEndsGame = 'y'
   while Choice != 'q':
     DisplayMenu()
     Choice = GetMenuChoice()
     if Choice == '1':
       LoadDeck(Deck)
       ShuffleDeck(Deck)
-      PlayGame(Deck, RecentScores)
+      PlayGame(Deck, RecentScores, SameCardEndsGame)
     elif Choice == '2':
       LoadDeck(Deck)
-      PlayGame(Deck, RecentScores)
+      PlayGame(Deck, RecentScores, SameCardEndsGame)
     elif Choice == '3':
+      RecentScores = BubbleSortScores(RecentScores)
       DisplayRecentScores(RecentScores)
     elif Choice == '4':
       ResetRecentScores(RecentScores)
@@ -382,7 +425,9 @@ if __name__ == '__main__':
       OptionChoice = SetOptions(OptionChoice)
       if OptionChoice == '1':
         AceRank = SetAceHighOrLow()
+      elif OptionChoice == '2':
+        SameCardEndsGame = SetSameScore()
     elif Choice == '6':
       SaveScores(RecentScores)
     elif Choice == '7':
-      LoadScores()
+      None
