@@ -1,0 +1,1 @@
+[None, <__main__.TRecentScore object at 0x037341F0>, <__main__.TRecentScore object at 0x03734210>, <__main__.TRecentScore object at 0x03734230>]
