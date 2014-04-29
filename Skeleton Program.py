@@ -6,11 +6,12 @@
 import random
 import datetime
 NO_OF_RECENT_SCORES = 3
-
+import pickle
 class TCard():
   def __init__(self):
     self.Suit = 0
     self.Rank = 0
+
 
 class TRecentScore():
   def __init__(self):
@@ -21,7 +22,9 @@ class TRecentScore():
 Deck = [None]
 RecentScores = [None]
 Choice = ''
-def GetRank(RankNo):
+
+
+def GetRank(RankNo, AceRank):
   if AceRank == 'l':
     Rank = ''
     if RankNo == 1:
@@ -50,8 +53,7 @@ def GetRank(RankNo):
       Rank = 'Queen'
     elif RankNo == 13:
       Rank = 'King'
-    return Rank
-  elif AceRank =='h':
+  elif AceRank == 'h':
     Rank = ''
     if RankNo == 1:
       Rank = 'Two'
@@ -79,8 +81,9 @@ def GetRank(RankNo):
       Rank = 'King'
     elif RankNo == 13:
       Rank = 'Ace'
-    return Rank
-    
+  return Rank
+  
+  
 def GetSuit(SuitNo):
   Suit = ''
   if SuitNo == 1:
@@ -102,6 +105,8 @@ def DisplayMenu():
   print('3. Display recent scores')
   print('4. Reset recent scores')
   print('5. Options')
+  print('6. Save High Scores')
+  print('7. Load High Scores')
   print()
   print('Select an option from the menu (or enter q to quit): ', end='')
 
@@ -110,25 +115,26 @@ def DisplayOptions():
   print()
   print('1. Set Ace to HIGH or LOW')
   print()
-  GetOptionChoice()
+  
 
 def GetOptionChoice():
   OptionChoice = input('Select an option from the menu (q for quit)')
-  SetOptions(OptionChoice)
+  return OptionChoice
 
 
 def SetOptions(OptionChoice):
   valid = False
   while not valid:
     if OptionChoice == '1':
-      SetAceHighOrLow()
+      return OptionChoice
       valid = True
     elif OptionChoice == 'q':
       valid = True
     else:
       valid = False
-      print('Not a valid option')
+      print('Not Valid')
       GetOptionChoice()
+      
       
 
 
@@ -142,9 +148,10 @@ def SetAceHighOrLow():
     elif selection == 'l':
       AceRank = 'l'
       Valid = True
+  print('---- Ace Set! ----')    
+  return AceRank
       
-  
-      
+   
 def GetMenuChoice():
   Choice = input()
   print()
@@ -180,7 +187,7 @@ def ShuffleDeck(Deck):
 
 def DisplayCard(ThisCard):
   print()
-  print('Card is the', GetRank(ThisCard.Rank), 'of', GetSuit(ThisCard.Suit))
+  print('Card is the', GetRank(ThisCard.Rank, AceRank), 'of', GetSuit(ThisCard.Suit))
   print()
 
 def GetCard(ThisCard, Deck, NoOfCardsTurnedOver):
@@ -246,6 +253,7 @@ def ResetRecentScores(RecentScores):
     RecentScores[Count].Date = ''
     
 def DisplayRecentScores(RecentScores):
+
   print()
   print('Recent Scores: ')
   print()
@@ -284,12 +292,41 @@ def UpdateRecentScores(RecentScores, Score):
       RecentScores[Count].Name = PlayerName
       RecentScores[Count].Score = Score
       RecentScores[Count].Date = Date
+      BubbleSortScores(RecentScores)
       valid = True
     else:
       valid = False
       print('Not valid')
+
+def BubbleSortScores(RecentScores):
+    swap = True
+    while swap:
+      swap = False
+      for count in range(len(RecentScores)-1):
+          if RecentScores[count].Score > RecentScores[count+1].Score:
+              swap = True
+              RecentScores[count].Name = RecentScores[Count + 1].Name
+              RecentScores[count].Score = RecentScores[Count + 1].Score
+              RecentScores[count].Date = RecentScores[Count + 1].Date
+              temp = RecentScores[count+1].Name
+              temp = RecentScores[count+1].Score
+              temp = RecentScores[count+1].Date
+
+    return RecentScores
+
+def SaveScores(RecentScores):
+  RecentScores = TRecentScore()
+  with open("save_scores.dat", mode="wb") as my_file:
+      pickle.dump(RecentScores, my_file)
+    
+def LoadScores():
+  RecentScores = TRecentScore
+  with open("save_scores.dat", mode="rb") as my_file:
+     RecentScores = pickle.load(my_file)
+  return RecentScores   
       
-   
+    
+
 def PlayGame(Deck, RecentScores):
   LastCard = TCard()
   NextCard = TCard()
@@ -324,6 +361,7 @@ if __name__ == '__main__':
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
     RecentScores.append(TRecentScore())
   Choice = ''
+  AceRank = 'l'
   while Choice != 'q':
     DisplayMenu()
     Choice = GetMenuChoice()
@@ -340,3 +378,11 @@ if __name__ == '__main__':
       ResetRecentScores(RecentScores)
     elif Choice == '5':
       DisplayOptions()
+      OptionChoice = GetOptionChoice()
+      OptionChoice = SetOptions(OptionChoice)
+      if OptionChoice == '1':
+        AceRank = SetAceHighOrLow()
+    elif Choice == '6':
+      SaveScores(RecentScores)
+    elif Choice == '7':
+      LoadScores()
