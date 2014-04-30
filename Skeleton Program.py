@@ -6,7 +6,7 @@
 import random
 import datetime
 NO_OF_RECENT_SCORES = 3
-
+import pickle
 class TCard():
   def __init__(self):
     self.Suit = 0
@@ -292,6 +292,7 @@ def UpdateRecentScores(RecentScores, Score):
       RecentScores[Count].Name = PlayerName
       RecentScores[Count].Score = Score
       RecentScores[Count].Date = Date
+      BubbleSortScores(RecentScores)
       valid = True
     else:
       valid = False
@@ -304,24 +305,27 @@ def BubbleSortScores(RecentScores):
       for count in range(len(RecentScores)-1):
           if RecentScores[count].Score > RecentScores[count+1].Score:
               swap = True
-              temp = RecentScores[count].Score
-              RecentScores[count].Score = RecentScores[count+1].Score
-              RecentScores[count+1].Score = temp
+              RecentScores[count].Name = RecentScores[Count + 1].Name
+              RecentScores[count].Score = RecentScores[Count + 1].Score
+              RecentScores[count].Date = RecentScores[Count + 1].Date
+              temp = RecentScores[count+1].Name
+              temp = RecentScores[count+1].Score
+              temp = RecentScores[count+1].Date
+
     return RecentScores
 
 def SaveScores(RecentScores):
-  RecentScores = str(RecentScores)
-  with open("save_scores.txt", mode="w") as my_file:
-      my_file.write(RecentScores)
+  RecentScores = TRecentScore()
+  with open("save_scores.dat", mode="wb") as my_file:
+      pickle.dump(RecentScores, my_file)
     
 def LoadScores():
-  with open("save_scores.txt", mode="r") as my_file:
-     for Count in range(1, NO_OF_RECENT_SCORES):
-        RecentScores[Count].Name = RecentScores[Count + 1].Name
-        RecentScores[Count].Score = RecentScores[Count + 1].Score
-        RecentScores[Count].Date = RecentScores[Count + 1].Date
+  RecentScores = TRecentScore
+  with open("save_scores.dat", mode="rb") as my_file:
+     RecentScores = pickle.load(my_file)
+  return RecentScores   
       
-  return RecentScores        
+    
 
 def PlayGame(Deck, RecentScores):
   LastCard = TCard()
