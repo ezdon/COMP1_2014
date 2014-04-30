@@ -5,8 +5,11 @@
 # version 2 edited 06/03/2014
 import random
 import datetime
+
 NO_OF_RECENT_SCORES = 10
+
 import pickle
+
 class TCard():
   def __init__(self):
     self.Suit = 0
@@ -160,7 +163,6 @@ def SetSameScore():
   Valid = False
   while not Valid:
     print()
-    print("If you set the game to continue each time cards are equal same you will not recieve a point every time they're not equal")
     selection = input('Do you want cards with the same value as the previous card to end the game? (y/n):')
     if selection == 'y':
       SameCardEndsGame = 'y'
@@ -271,9 +273,9 @@ def DisplayCorrectGuessMessage(Score):
 
 def ResetRecentScores(RecentScores):
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
-    RecentScores[Count].Name = ''
+    RecentScores[Count].Name = 'None'
     RecentScores[Count].Score = 0
-    RecentScores[Count].Date = ''
+    RecentScores[Count].Date = 'None'
     
 def DisplayRecentScores(RecentScores):
 
@@ -315,40 +317,48 @@ def UpdateRecentScores(RecentScores, Score):
       RecentScores[Count].Name = PlayerName
       RecentScores[Count].Score = Score
       RecentScores[Count].Date = Date
+      #BubbleSortScores(RecentScores)
       valid = True
     else:
       valid = False
       print('Not valid')
 
 def BubbleSortScores(RecentScores):
-    l=len(RecentScores)
-    swap = True
-    while swap:
-      swap = False
-      for count in range(1,l-1):
-          if RecentScores[count].Score < RecentScores[count+1].Score:
-              tempScore = RecentScores[count].Score
-              tempDate = RecentScores[count].Date
-              tempName = RecentScores[count].Name
+  l=len(RecentScores)
+  swap = True
+  while swap:
+    swap = False
 
-              RecentScores[count].Score = RecentScores[count+1].Score
-              RecentScores[count].Date = RecentScores[count+1].Date
-              RecentScores[count].Name = RecentScores[count+1].Name
-              RecentScores[count+1].Score = tempScore
-              RecentScores[count+1].Date = tempDate
-              RecentScores[count+1].Name = tempName                
-              swapped = True
-    return RecentScores
+    for count in range(1,l-1):
+        if RecentScores[count].Score < RecentScores[count+1].Score:
+            tempScore = RecentScores[count].Score
+            tempDate = RecentScores[count].Date
+            tempName = RecentScores[count].Name
+
+            RecentScores[count].Score = RecentScores[count+1].Score
+            RecentScores[count].Date = RecentScores[count+1].Date
+            RecentScores[count].Name = RecentScores[count+1].Name
+            RecentScores[count+1].Score = tempScore
+            RecentScores[count+1].Date = tempDate
+            RecentScores[count+1].Name = tempName                
+            swapped = True
+
+
 
 def SaveScores(RecentScores):
   with open("save_scores.dat", mode="wb") as my_file:
       pickle.dump(RecentScores, my_file)
-    
+  print()
+  print('----Scores Saved!----')
 def LoadScores():
-  RecentScores = TRecentScore
-  with open("save_scores.dat", mode="rb") as my_file:
-     RecentScores = pickle.load(my_file)
-  return RecentScores   
+    with open("save_scores.dat", mode="rb") as my_file:
+       RecentScores = pickle.load(my_file)
+    return RecentScores   
+  
+
+      
+    
+
       
     
 
@@ -366,9 +376,12 @@ def PlayGame(Deck, RecentScores, SameScoreEndsGame):
       Choice = GetChoiceFromUser()
     DisplayCard(NextCard)
     Higher, Same = IsNextCardHigher(LastCard, NextCard)
+    if not Same:
+      NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
+    elif Same and SameScoreEndsGame == 'n':  
+      print("Cards were the same! You don't get a point")
     if SameScoreEndsGame == 'y' and (Higher and Choice == 'y') or SameScoreEndsGame == 'y' and (not Higher and Choice == 'n'):
       DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
-      NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
       LastCard.Rank = NextCard.Rank
       LastCard.Suit = NextCard.Suit
     elif SameScoreEndsGame == 'n':
@@ -378,7 +391,6 @@ def PlayGame(Deck, RecentScores, SameScoreEndsGame):
         LastCard.Suit = NextCard.Suit
       elif Same == False and (Higher and Choice == 'y') or Same == False and  (not Higher and Choice == 'n'):
         DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
-        NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
         LastCard.Rank = NextCard.Rank
         LastCard.Suit = NextCard.Suit
       else:
@@ -393,14 +405,14 @@ def PlayGame(Deck, RecentScores, SameScoreEndsGame):
     UpdateRecentScores(RecentScores, 51)
 
 if __name__ == '__main__':
-  try:
-    RecentScores = LoadScores()
-  except FileNotFoundError:
-    print('The file was not found. You need to save some high scores first in order for them to be loaded')
   for Count in range(1, 53):
     Deck.append(TCard())
-  for Count in range(1, NO_OF_RECENT_SCORES + 1):
-    RecentScores.append(TRecentScore())
+  try:
+    RecentScores = LoadScores()
+  except FileNotFoundError:  
+    for Count in range(1, NO_OF_RECENT_SCORES + 1):
+      RecentScores.append(TRecentScore())
+   
   Choice = ''
   AceRank = 'l'
   SameCardEndsGame = 'y'
@@ -415,7 +427,7 @@ if __name__ == '__main__':
       LoadDeck(Deck)
       PlayGame(Deck, RecentScores, SameCardEndsGame)
     elif Choice == '3':
-      RecentScores = BubbleSortScores(RecentScores)
+      BubbleSortScores(RecentScores)
       DisplayRecentScores(RecentScores)
     elif Choice == '4':
       ResetRecentScores(RecentScores)
