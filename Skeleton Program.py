@@ -376,7 +376,7 @@ def PlayGame(Deck, RecentScores, SameScoreEndsGame):
       Choice = GetChoiceFromUser()
     DisplayCard(NextCard)
     Higher, Same = IsNextCardHigher(LastCard, NextCard)
-    if not Same:
+    if not Same and SameScoreEndsGame == 'y' or Same == True and SameScoreEndsGame == 'y':
       NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
     elif Same and SameScoreEndsGame == 'n':  
       print("Cards were the same! You don't get a point")

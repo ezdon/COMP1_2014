@@ -35,3 +35,31 @@ Task Sheet 2 Questions
 1. PlayGame
 2. DisplayMenu()
 3. GetRank()	
+
+Task Sheet 2 PsuedoCode
+
+FUNCTION GetOptionChoice()
+	OptionChoice: String
+	OptionChoice <- INPUT "Select an option from the menu"
+	RETURN OptionChoice
+END FUNCTION	
+	
+FUNCTION SetOptions(OptionChoice: String)
+	valid: Boolean
+	valid <- FALSE
+	WHILE valid = FALSE DO
+		IF OptionChoice = '1' THEN
+			RETURN OptionChoice
+			valid = TRUE
+		ELSE IF OptionChoice = '2' THEN
+			RETURN OptionChoice
+			valid = TRUE
+		ELSE IF OptionChoice = 'q' THEN
+			valid = TRUE
+		ELSE
+			valid = FALSE
+			OUTPUT "Not Valid"
+			CALL GetOptionChoice()
+		END IF	
+	END WHILE
+END FUNCTION	
