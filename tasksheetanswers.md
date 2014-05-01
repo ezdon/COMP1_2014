@@ -38,6 +38,14 @@ Task Sheet 2 Questions
 
 Task Sheet 2 PsuedoCode
 
+FUNCTION DisplayOptions()
+	OUTPUT "Options Menu"
+	OUTPUT ""
+	OUTPUT "1. Set Ace to HIGH or LOW"
+	OUTPUT "2. Card of same score ends game"
+	OUTPUT ""
+END FUNCTION
+
 FUNCTION GetOptionChoice()
 	OptionChoice: String
 	OptionChoice <- INPUT "Select an option from the menu"
@@ -63,3 +71,26 @@ FUNCTION SetOptions(OptionChoice: String)
 		END IF	
 	END WHILE
 END FUNCTION	
+
+FUNCTION SetAceHighOrLow()
+	Valid: Boolean
+	AceRank: String
+	selection: String
+	Valid <- FALSE
+	WHILE Valid = FALSE DO
+		OUTPUT""
+		selection <- INPUT "would you like the ace to be high or low?"
+		IF selection = 'h' THEN
+			AceRank = 'h'
+			Valid = TRUE
+		ELSE IF selection = 'l' THEN
+			AceRank = 'l'
+			Valid = TRUE
+		END IF
+	END WHILE
+	OUTPUT ""
+	OUTPUT "----Ace Set!----"
+	RETURN AceRank
+END FUNCTION	
+			
+		
