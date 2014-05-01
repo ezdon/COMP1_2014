@@ -346,13 +346,22 @@ def BubbleSortScores(RecentScores):
 
 
 def SaveScores(RecentScores):
-  with open("save_scores.dat", mode="wb") as my_file:
-      pickle.dump(RecentScores, my_file)
+  with open("save_scores.txt", mode="w", encoding="UTF-8") as my_file:
+      for count in range(1, NO_OF_RECENT_SCORES + 1):
+        my_file.write(str(RecentScores[count].Name)+'\n')
+        my_file.write(str(RecentScores[count].Score)+'\n')
+        my_file.write(str(RecentScores[count].Date)+'\n')
+
   print()
   print('----Scores Saved!----')
+
 def LoadScores():
-    with open("save_scores.dat", mode="rb") as my_file:
-       RecentScores = pickle.load(my_file)
+    with open("save_scores.txt", mode="r", encoding="UTF-8") as my_file:
+       for count in range(1, NO_OF_RECENT_SCORES + 1):
+          RecentScores.append(RecentScores[count].Name)
+          RecentScores.append(RecentScores[count].Score)
+          RecentScores.append(RecentScores[count].Date)
+
     return RecentScores   
   
 
@@ -409,7 +418,8 @@ if __name__ == '__main__':
     Deck.append(TCard())
   try:
     RecentScores = LoadScores()
-  except:  
+  except IOError:
+    print('--Error--')
     for Count in range(1, NO_OF_RECENT_SCORES + 1):
       RecentScores.append(TRecentScore())
    
