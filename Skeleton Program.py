@@ -1,4 +1,4 @@
-# Skeleton Program code for the AQA COMP1 Summer 2014 examination
+#Skeleton Program code for the AQA COMP1 Summer 2014 examination
 # this code should be used in conjunction with the Preliminary Material
 # written by the AQA Programmer Team
 # developed in the Python 3.2 programming environment
@@ -409,7 +409,7 @@ if __name__ == '__main__':
     Deck.append(TCard())
   try:
     RecentScores = LoadScores()
-  except FileNotFoundError:  
+  except:  
     for Count in range(1, NO_OF_RECENT_SCORES + 1):
       RecentScores.append(TRecentScore())
    
@@ -442,4 +442,4 @@ if __name__ == '__main__':
     elif Choice == '6':
       SaveScores(RecentScores)
     elif Choice == '7':
-      None
+        None
