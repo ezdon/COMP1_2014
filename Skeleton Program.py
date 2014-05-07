@@ -357,12 +357,11 @@ def SaveScores(RecentScores):
 
 def LoadScores():
     with open("save_scores.txt", mode="r", encoding="UTF-8") as my_file:
-       for count in range(1, NO_OF_RECENT_SCORES + 1):
-          RecentScores.append(RecentScores[count].Name)
-          RecentScores.append(RecentScores[count].Score)
-          RecentScores.append(RecentScores[count].Date)
+       for each in my_file:
+         RecentScores.append(my_file)
+         
 
-    return RecentScores   
+   
   
 
       
@@ -416,12 +415,13 @@ def PlayGame(Deck, RecentScores, SameScoreEndsGame):
 if __name__ == '__main__':
   for Count in range(1, 53):
     Deck.append(TCard())
+  for Count in range(1, NO_OF_RECENT_SCORES + 1):
+      RecentScores.append(TRecentScore())
   try:
     RecentScores = LoadScores()
   except IOError:
     print('--Error--')
-    for Count in range(1, NO_OF_RECENT_SCORES + 1):
-      RecentScores.append(TRecentScore())
+
    
   Choice = ''
   AceRank = 'l'
